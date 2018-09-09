@@ -13,17 +13,25 @@ class GameArea:
     player_size = 10
     mutation_factor = 20
 
+    smooth = False
+    smoothness_factor = 20
+
+    remove_inactive = True
+
     step_size = 0.01
     no_of_steps = 400
 
     target_position = 40, 40
     target_size = 10
 
+    text_area = None
+
     def create_canvas(self, width=500, height=500):
         master = Tk()
 
         canvas = Canvas(master, width=width, height=height)
         self.canvas = canvas
+        self.text_area = self.canvas.create_text(50, 10, text='Generation 0')
 
         self.create_players(self.start_pos[0], self.start_pos[1], self.player_size)
 
@@ -45,7 +53,8 @@ class GameArea:
 
     def create_players(self, x=480, y=480, width=10):
         for i in range(self.no_of_players):
-            player = Player(self.canvas.create_rectangle(x, y, x + width, y + width, fill='green'), steps=self.no_of_steps)
+            player = Player(self.canvas.create_rectangle(x, y, x + width, y + width, fill='green'), self.no_of_steps,
+                            self.smooth, self.smoothness_factor)
             self.players.append(player)
 
     def move_player(self, player, angle, distance):
@@ -103,10 +112,14 @@ class GameArea:
         for player in self.players:
             if not player == best_player:
                 player.kill()
-                self.canvas.itemconfig(player.canvas_object, fill='black')
+                if self.remove_inactive:
+                    self.canvas.delete(player.canvas_object)
+                else:
+                    self.canvas.itemconfig(player.canvas_object, fill='black')
 
         self.players = [self.clone_player(best_player, self.start_pos[0], self.start_pos[1], self.player_size) for i in
                         range(self.no_of_players + 1)]
 
         for i in range(self.no_of_players):
             self.players[i].mutate(self.mutation_factor)
+

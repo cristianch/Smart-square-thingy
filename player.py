@@ -1,4 +1,5 @@
 from game_area import *
+from utils import *
 from random import uniform
 
 
@@ -7,9 +8,12 @@ class Player:
     canvas_object = None
     directions = []
 
-    def __init__(self, canvas_object, steps=400):
+    def __init__(self, canvas_object, steps=400, smooth=False, smoothness_factor=20):
         self.canvas_object = canvas_object
-        self.directions = [uniform(0, 360) for i in range(steps)]
+        if smooth:
+            self.directions = random_angle_array_smooth(steps, smoothness_factor)
+        else:
+            self.directions = random_angle_array(steps)
 
     def kill(self):
         self.is_active = False

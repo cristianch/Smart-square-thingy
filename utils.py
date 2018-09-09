@@ -1,4 +1,5 @@
 from math import sin, cos, radians, sqrt
+from random import uniform
 
 
 def get_movement_vector(angle, distance):
@@ -34,3 +35,16 @@ def edge_rectangles_coords(width, height):
 
 def distance(x1, y1, x2, y2):
     return sqrt((x1-x2) ** 2 + (y1-y2) ** 2)
+
+
+def random_angle_array(size):
+    return [uniform(0, 360) for i in range(size)]
+
+
+def random_angle_array_smooth(size, smoothness_factor):
+    arr = [uniform(0, 360)]
+
+    for i in range(1, size):
+        arr.append(arr[i-1] + uniform(-smoothness_factor, smoothness_factor))
+
+    return arr
