@@ -1,6 +1,7 @@
 from game_area import *
 from utils import *
 from random import uniform
+from itertools import starmap
 
 
 class Player:
@@ -25,7 +26,8 @@ class Player:
         return new_player
 
     def mutate(self, mutation_factor=15):
-        mutations = [uniform(-mutation_factor, mutation_factor) for i in range(len(self.directions))]
+        # Mutate each step by a random angle, no more than the mutation factor
+        mutations = [uniform(-mutation_factor, mutation_factor) for i in self.directions]
         self.directions = [d + m for d, m in zip(self.directions, mutations)]
 
 

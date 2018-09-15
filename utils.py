@@ -2,6 +2,7 @@ from math import sin, cos, radians, sqrt
 from random import uniform
 
 
+# Decompose the movement vector on x and y axes based on angle
 def get_movement_vector(angle, distance):
     x_diff = distance * sin(radians(angle))
     y_diff = distance * cos(radians(angle))
@@ -33,6 +34,7 @@ def edge_rectangles_coords(width, height):
     return [top, bottom, left, right]
 
 
+# Pythagoras theorem stuff to get distance between two sets of coords
 def distance(x1, y1, x2, y2):
     return sqrt((x1-x2) ** 2 + (y1-y2) ** 2)
 
@@ -44,6 +46,7 @@ def random_angle_array(size):
 def random_angle_array_smooth(size, smoothness_factor):
     arr = [uniform(0, 360)]
 
+    # When using smoothing, a the maximum angle between two consecutive steps is smoothness_factor
     for i in range(1, size):
         arr.append(arr[i-1] + uniform(-smoothness_factor, smoothness_factor))
 

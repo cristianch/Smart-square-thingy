@@ -1,30 +1,36 @@
 from game_area import *
 from time import sleep
 
+# Size of the window and game area
+area_width = 800
+area_height = 600
 
-area_width = 700
-area_height = 700
+step_size = 6  # How far the squares go in one step
+sleep_after_step = True  # Set to true to add a small time interval between steps
+step_duration = 0.001  # Only applicable if 'sleep_after_step' is set to true
 
-step_size = 4
-sleep_after_step = True
-step_duration = 0.001
+smooth = True  # If true then angle difference between two consecutive steps will be limited for 1st generation
+smoothness_factor = 30  # Limit for angle difference between two consecutive steps, if 'smooth' is true
 
-smooth = True
-smoothness_factor = 20
+remove_inactive_players = True  # Remove inactive squares after each generation (recommended)
 
-remove_inactive_players = True
+generations = 100
 
-generations = 50
-mutation_factor = 70
+# Maximum mutation i.e. angle difference between s[i] and p[i] for s[i] = step i of current square
+# and p[i] step i of current square's parent
+mutation_factor = 50
 
-no_of_steps = 350
-no_of_players = 30
-starting_position = 450, 450
+no_of_steps = 200
+no_of_players = 35  # Number of players per generation
+starting_position = 450, 450  # All new players spawn here
 target_position = 40, 40
 
+# Obstacles should be set in the format
+# {'x': top-left-corner-x, 'y': top-left-corner-y, 'w': width, 'h': height}
 obstacles = [
     {'x': 200, 'y': 200, 'w': 10, 'h': 200},
-    {'x': 300, 'y': 300, 'w': 100, 'h': 10}
+    {'x': 300, 'y': 300, 'w': 100, 'h': 10},
+    {'x': 500, 'y': 400, 'w': 10, 'h': 150}
 ]
 
 ga = GameArea()
@@ -52,6 +58,8 @@ for gen in range(generations):
     if ga.new_generation() == 'fail':
         print('The entire generation has failed. Better luck next time...')
         break
+
+    # Print generation number to the top left of the window
     ga.canvas.itemconfig(ga.text_area, text='Generation ' + str(gen + 1) + ' of ' + str(generations))
     ga.canvas.update()
 
