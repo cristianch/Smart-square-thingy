@@ -1,7 +1,6 @@
 from game_area import *
 from utils import *
 from random import uniform
-from itertools import starmap
 
 
 class Player:
