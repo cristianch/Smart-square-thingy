@@ -1,6 +1,7 @@
-from tkinter import *
-from player import *
-from utils import *
+import utils
+
+from tkinter import Tk, Canvas
+from player import Player
 
 
 class GameArea:
@@ -39,7 +40,7 @@ class GameArea:
 
         self.create_target()
 
-        self.obstacles += edge_rectangles_coords(width, height)
+        self.obstacles += utils.edge_rectangles_coords(width, height)
 
         # Add the window edges to the list of obstacles (we want players to fail when hitting them)
         for o in self.obstacles:
@@ -57,15 +58,12 @@ class GameArea:
                                 fill='yellow')
 
     def create_players(self, x=480, y=480, width=10):
-        for i in range(self.no_of_players):
-            # For each player create and assign it a square on the canvas
-            player = Player(self.canvas.create_rectangle(x, y, x + width, y + width, fill='green'), self.no_of_steps,
-                            self.smooth, self.smoothness_factor)
-            self.players.append(player)
+        self.players = [Player(self.canvas.create_rectangle(x, y, x + width, y + width, fill='green'), self.no_of_steps,
+                               self.smooth, self.smoothness_factor) for _ in range(self.no_of_players)]
 
     def move_player(self, player, angle, distance):
         # Get movement vectors on the x and y axes
-        x_diff, y_diff = get_movement_vector(angle, distance)
+        x_diff, y_diff = utils.get_movement_vector(angle, distance)
 
         # Update player's location on the canvas
         x1, y1, x2, y2 = self.canvas.coords(player.canvas_object)
@@ -73,9 +71,8 @@ class GameArea:
         self.canvas.update()
 
     def move_players(self, step):
-        for player in self.players:
-            if player.is_active:
-                self.move_player(player, player.directions[step], self.step_size)
+        [self.move_player(player, player.directions[step], self.step_size) for player in self.players
+                                                                           if player.is_active]
 
         # After all players have completed the step, check if any player has hit an obstacle
         self.check_collisions()
@@ -90,7 +87,7 @@ class GameArea:
                 obstacle_coords = (
                     obstacle['x'], obstacle['y'], obstacle['x'] + obstacle['w'], obstacle['y'] + obstacle['h'])
 
-                if collision(player_coords, obstacle_coords):
+                if utils.collision(player_coords, obstacle_coords):
                     player.kill()
                     self.canvas.itemconfig(player.canvas_object, fill='black')
 
@@ -104,7 +101,7 @@ class GameArea:
                 x_player, y_player, u, u, = self.canvas.coords(player.canvas_object)
 
                 # Use inverted distance as score so that score grows as distance shrinks
-                score = 1 / distance(x_player, y_player, self.target_pos[0], self.target_pos[1])
+                score = 1 / utils.distance(x_player, y_player, self.target_pos[0], self.target_pos[1])
 
                 if score > best_score:
                     best_score = score
@@ -137,10 +134,9 @@ class GameArea:
 
         # Create a new generation based on clones of the best player from this generation
         # After the first generation the number of players increases by 1 to make space for winner's identical clone
-        self.players = [self.clone_player(best_player, self.start_pos[0], self.start_pos[1], self.player_size) for i in
+        self.players = [self.clone_player(best_player, self.start_pos[0], self.start_pos[1], self.player_size) for _ in
                         range(self.no_of_players + 1)]
 
         # All but one of the clones are mutated
         for i in range(self.no_of_players):
             self.players[i].mutate(self.mutation_factor)
-

@@ -1,4 +1,5 @@
-from game_area import *
+from tkinter import mainloop
+from game_area import GameArea
 from time import sleep
 
 # Size of the window and game area

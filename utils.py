@@ -2,15 +2,15 @@ from math import sin, cos, radians, sqrt
 from random import uniform
 
 
-# Decompose the movement vector on x and y axes based on angle
 def get_movement_vector(angle, distance):
+    """ Decompose the movement vector on x and y axes based on angle """
     x_diff = distance * sin(radians(angle))
     y_diff = distance * cos(radians(angle))
     return x_diff, y_diff
 
 
-# True if two rectangles are colliding; takes their coord tuples as params
 def collision(coords1, coords2):
+    """ True if two rectangles are colliding; takes their coord tuples as params """
     c1 = {'x_top_left': coords1[0], 'y_top_left': coords1[1], 'x_bot_right': coords1[2], 'y_bot_right': coords1[3]}
     c2 = {'x_top_left': coords2[0], 'y_top_left': coords2[1], 'x_bot_right': coords2[2], 'y_bot_right': coords2[3]}
 
@@ -23,9 +23,11 @@ def collision(coords1, coords2):
     return True
 
 
-# For an area of given width and height, generate coords for the edges of the area
-# We need this to create obstacles on the edges so players can't leave the game area
 def edge_rectangles_coords(width, height):
+    """
+    For an area of given width and height, generate coords for the edges of the area
+    We need this to create obstacles on the edges so players can't leave the game area
+    """
     top = {'x': 0, 'y': 0, 'w': width, 'h': 1}
     bottom = {'x': 0, 'y': height+2, 'w': width, 'h': 1}
     left = {'x': 0, 'y': 0, 'w': 1, 'h': height}
@@ -34,13 +36,13 @@ def edge_rectangles_coords(width, height):
     return [top, bottom, left, right]
 
 
-# Pythagoras theorem stuff to get distance between two sets of coords
 def distance(x1, y1, x2, y2):
+    """ Pythagoras theorem stuff to get distance between two sets of coords """
     return sqrt((x1-x2) ** 2 + (y1-y2) ** 2)
 
 
 def random_angle_array(size):
-    return [uniform(0, 360) for i in range(size)]
+    return [uniform(0, 360) for _ in range(size)]
 
 
 def random_angle_array_smooth(size, smoothness_factor):
